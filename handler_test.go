@@ -10,6 +10,7 @@ import (
 var (
 	anyInt  = expvar.NewInt("any")
 	code200 = expvar.NewInt("code:200")
+	code302 = expvar.NewInt("code:302")
 	blank   = expvar.NewInt("")
 
 	expected = map[string]string{
@@ -17,15 +18,16 @@ var (
 
 		"list":        " any cmdline code memstats",
 		"config any":  "graph_title any\ngraph_category expvar\ngraph_args --base 1000 --units=si\nany.label any\nany.min 0\nany.type DERIVE\n.",
-		"config code": "graph_title code\ngraph_category expvar\ngraph_args --base 1000 --units=si\n_200.label 200\n_200.min 0\n_200.type DERIVE\n.",
+		"config code": "graph_title code\ngraph_category expvar\ngraph_args --base 1000 --units=si\n_200.label 200\n_200.min 0\n_200.type DERIVE\n_302.label 302\n_302.min 0\n_302.type DERIVE\n.",
 		"fetch any":   "any.value 123\n.",
-		"fetch code":  "_200.value 42\n.",
+		"fetch code":  "_200.value 42\n_302.value 16\n.",
 	}
 )
 
 func init() {
 	anyInt.Add(123)
 	code200.Add(42)
+	code302.Add(16)
 }
 
 func TestHandler(t *testing.T) {
