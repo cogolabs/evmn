@@ -19,10 +19,14 @@ func kk(k string) string {
 
 func fetch(name string, f func(k, v string)) {
 	expvar.Do(func(kv expvar.KeyValue) {
-		if !strings.HasPrefix(kv.Key, name+":") {
+		if kv.Key != name && !strings.HasPrefix(kv.Key, name+":") {
 			return
 		}
 		lst := strings.Split(kv.Key, ":")
+		if len(lst) == 1 {
+			f(lst[0], kv.Value.String())
+			return
+		}
 		f(lst[1], kv.Value.String())
 	})
 }
