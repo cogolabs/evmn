@@ -13,6 +13,8 @@ var (
 	blank   = expvar.NewInt("")
 
 	expected = map[string]string{
+		"cap": "multigraph",
+
 		"list":        " any cmdline code memstats",
 		"config any":  "graph_title any\ngraph_category expvar\ngraph_args --base 1000 --units=si\nany.label any\nany.min 0\nany.type DERIVE\n.",
 		"config code": "graph_title code\ngraph_category expvar\ngraph_args --base 1000 --units=si\n_200.label 200\n_200.min 0\n_200.type DERIVE\n.",

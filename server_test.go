@@ -13,6 +13,7 @@ import (
 
 func init() {
 	hostname = fmt.Sprint(rand.Int63())
+	expected["nodes"] = hostname + "\n."
 }
 
 func TestListenAndServe(t *testing.T) {
@@ -23,6 +24,10 @@ func TestListenAndServe(t *testing.T) {
 }
 
 func TestServer(t *testing.T) {
+	expected["config"] = "# Unknown service"
+	expected["fetch"] = "# Unknown service"
+	expected["help"] = "# Unknown command"
+
 	for k, v := range expected {
 		conn, err := net.Dial("tcp", "localhost:4950")
 		assert.NoError(t, err)
