@@ -17,16 +17,18 @@ func kk(k string) string {
 	return k
 }
 
-func fetch(name string, f func(k, v string)) {
+func fetch(name string, f func(k string, v interface{})) {
 	expvar.Do(func(kv expvar.KeyValue) {
 		if kv.Key != name && !strings.HasPrefix(kv.Key, name+":") {
 			return
 		}
-		lst := strings.Split(kv.Key, ":")
-		if len(lst) == 1 {
-			f(lst[0], kv.Value.String())
+
+		if kv.Key == name {
+			f(kv.Key, kv.Value)
 			return
 		}
-		f(lst[1], kv.Value.String())
+
+		lst := strings.Split(kv.Key, ":")
+		f(lst[1], kv.Value)
 	})
 }

@@ -46,10 +46,16 @@ func handler(command string) (r string, err error) {
 			return "", ErrUnknownSvc
 		}
 		key := fields[1]
-
 		lines := []string{}
-		fetch(key, func(k, v string) {
-			lines = append(lines, kk(k)+".value "+v)
+		fetch(key, func(k string, v interface{}) {
+			switch t := v.(type) {
+			case *expvar.Int:
+				lines = append(lines, kk(k)+".value "+t.String())
+			case *expvar.Map:
+				t.Do(func(kv expvar.KeyValue) {
+					lines = append(lines, kk(kv.Key)+".value "+kv.Value.String())
+				})
+			}
 		})
 		return strings.Join(lines, "\n") + "\n.", nil
 
@@ -65,13 +71,25 @@ func handler(command string) (r string, err error) {
 			"graph_args --base 1000 --units=si",
 		}
 
-		fetch(key, func(k0, v string) {
-			k := kk(k0)
-			lines = append(lines,
-				k+".label "+k0,
-				k+".min 0",
-				k+".type DERIVE",
-			)
+		fetch(key, func(k0 string, v interface{}) {
+			switch t := v.(type) {
+			case *expvar.Int:
+				k := kk(k0)
+				lines = append(lines,
+					k+".label "+k0,
+					k+".min 0",
+					k+".type DERIVE",
+				)
+			case *expvar.Map:
+				t.Do(func(kv expvar.KeyValue) {
+					k := kk(kv.Key)
+					lines = append(lines,
+						k+".label "+kv.Key,
+						k+".min 0",
+						k+".type DERIVE",
+					)
+				})
+			}
 		})
 		return strings.Join(lines, "\n") + "\n.", nil
 
