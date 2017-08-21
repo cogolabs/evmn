@@ -11,6 +11,7 @@ func kk(k string) string {
 		return k
 	}
 	k = strings.Replace(k, ".", "_", -1)
+	k = strings.Replace(k, " ", "_", -1)
 	if !unicode.IsLetter(rune(k[0])) {
 		return "_" + k
 	}
