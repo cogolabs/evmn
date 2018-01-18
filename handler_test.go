@@ -20,7 +20,7 @@ var (
 	expected = map[string]string{
 		"cap": "multigraph",
 
-		"list":           " any badType cmdline code intMap memstats",
+		"list":           " any code intMap",
 		"config any":     "graph_title any\ngraph_category expvar\ngraph_args --base 1000 --units=si\nany.label any\nany.min 0\nany.type DERIVE\n.",
 		"config code":    "graph_title code\ngraph_category expvar\ngraph_args --base 1000 --units=si\n_200.label 200\n_200.min 0\n_200.type DERIVE\n_302.label 302\n_302.min 0\n_302.type DERIVE\n.",
 		"config intMap":  "graph_title intMap\ngraph_category expvar\ngraph_args --base 1000 --units=si\nbig.label big\nbig.min 0\nbig.type DERIVE\nsmall.label small\nsmall.min 0\nsmall.type DERIVE\n.",
