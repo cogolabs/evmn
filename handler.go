@@ -3,6 +3,7 @@ package evmn
 import (
 	"errors"
 	"expvar"
+	"reflect"
 	"sort"
 	"strings"
 )
@@ -13,6 +14,9 @@ var (
 
 	// ErrUnknownSvc is the response when fetching a nonexistent service
 	ErrUnknownSvc = errors.New("Unknown service")
+
+	// AllowedTypes is the list of types that are allowed to be exported to munin
+	AllowedTypes = []string{"*expvar.Int", "*expvar.Map"}
 )
 
 func handler(command string) (r string, err error) {
@@ -27,6 +31,17 @@ func handler(command string) (r string, err error) {
 		keys := []string{}
 		seen := map[string]bool{}
 		expvar.Do(func(kv expvar.KeyValue) {
+			// Doing nothing if not an allowed type
+			allowed := false
+			for _, typ := range AllowedTypes {
+				if reflect.TypeOf(kv.Value).String() == typ {
+					allowed = true
+					break
+				}
+			}
+			if !allowed {
+				return
+			}
 			g := strings.Split(kv.Key, ":")[0]
 			f := strings.Split(g, ".")[0]
 			if seen[f] {
